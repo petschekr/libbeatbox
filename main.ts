@@ -4,17 +4,6 @@
 var Bluebird = require("bluebird");
 var PlayMusic = require("playmusic");
 
-function noErrorPromisifier(originalMethod) {
-	return function promisified() {
-		var args = [].slice.call(arguments);
-		var self = this;
-		return new Promise(function (resolve,reject) {
-			args.push(resolve); 
-			originalMethod.apply(self,args);
-		});
-	};
-}
-
 interface QueueItem {
 	id: {
 		track: string;
@@ -38,7 +27,7 @@ class Beatbox {
 	public queue: QueueItem[] = [];
 
 	constructor() {
-		this.pm = Promise.promisifyAll(new PlayMusic(), {promisifier: noErrorPromisifier});
+		this.pm = Bluebird.promisifyAll(new PlayMusic());
 	}
 	login(email: string, password: string, callback?: (err: Error) => any) {
 		return pm.initAsync({"email": email, "password": password}).nodeify(callback);
