@@ -23,7 +23,6 @@
     "url": "https://github.com/petschekr/libbeatbox.git"
   },
   "dependencies": {
-    "bluebird": "^2.9.27",
     "playmusic": "^2.0"
   }
 }

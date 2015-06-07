@@ -1,8 +1,10 @@
 /// <reference path="typescript_defs/node.d.ts" />
-/// <reference path="typescript_defs/bluebird.d.ts" />
 
-var Bluebird = require("bluebird");
 var PlayMusic = require("playmusic");
+
+type PromiseResolve = (value?: any) => any;
+type PromiseReject = (reason: Error) => any;
+declare var Promise: any;
 
 interface QueueItem {
 	id: {
@@ -27,9 +29,23 @@ class Beatbox {
 	public queue: QueueItem[] = [];
 
 	constructor() {
-		this.pm = Bluebird.promisifyAll(new PlayMusic());
+		if (!Promise) {
+			throw new Error("libbeatbox requires an ES6 environment with promises enabled. Please upgrade to a newer version of Node.js or use io.js");
+		}
+		this.pm = new PlayMusic();
 	}
-	login(email: string, password: string, callback?: (err: Error) => any) {
-		return pm.initAsync({"email": email, "password": password}).nodeify(callback);
+	login (email: string, password: string) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.init({email: email, password: password}, function (err: Error) {
+    			if (err) {
+					reject(err);
+				}
+				else {
+					resolve();
+				}
+			});
+		});
 	}
 }
+
+export = Beatbox;
