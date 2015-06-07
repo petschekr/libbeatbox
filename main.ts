@@ -108,7 +108,7 @@ class Beatbox {
 		}
 		this.pm = new PlayMusic();
 	}
-	login (email: string, password: string) {
+	public login (email: string, password: string) {
 		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
 			this.pm.init({email: email, password: password}, (err: Error) => {
     			if (err) {
@@ -122,7 +122,7 @@ class Beatbox {
 			});
 		});
 	}
-	search (query: string, maxResults?: number) {
+	public search (query: string, maxResults?: number) {
 		if (!maxResults) {
 			maxResults = 1;
 		}
@@ -160,7 +160,7 @@ class Beatbox {
 			});
 		});
 	}
-	searchTrack (query: string) {
+	public searchTrack (query: string) {
 		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
 			this.pm.search(query, 1, (err: Error, data: any) => {
 				if (err) {
