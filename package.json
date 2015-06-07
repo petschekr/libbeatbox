@@ -1,28 +1,29 @@
 {
-	"name": "beatbox",
-	"version": "1.0.0",
-	"description": "Module for streaming, queuing, and more from Google Play Music",
-	"keywords": [
-		"Google Play",
-		"Play Music",
-	],
-	"homepage": "https://github.com/petschekr/libbeatbox",
-	"main": "play",
-	"bugs": {
-		"url": "https://github.com/petschekr/libbeatbox/issues",
-		"email": "petschekr@gmail.com"
-	},
-	"license": "MIT",
-	"author": {
-		"name": "Ryan Petschek",
-		"email": "petschekr@gmail.com",
-		"url": "https://github.com/petschekr/"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/petschekr/libbeatbox.git"
-	},
-	"dependencies": {
-		"playmusic": "^2.0"
-	}
+  "name": "beatbox",
+  "version": "1.0.0",
+  "description": "Module for streaming, queuing, and more from Google Play Music",
+  "keywords": [
+    "Google Play",
+    "Play Music"
+  ],
+  "homepage": "https://github.com/petschekr/libbeatbox",
+  "main": "play",
+  "bugs": {
+    "url": "https://github.com/petschekr/libbeatbox/issues",
+    "email": "petschekr@gmail.com"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Ryan Petschek",
+    "email": "petschekr@gmail.com",
+    "url": "https://github.com/petschekr/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/petschekr/libbeatbox.git"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.27",
+    "playmusic": "^2.0"
+  }
 }
