@@ -1,3 +1,6 @@
+/// <reference path="typescript_defs/node.d.ts" />
+/// <reference path="typescript_defs/bluebird.d.ts" />
+
 var Bluebird = require("bluebird");
 var PlayMusic = require("playmusic");
 
