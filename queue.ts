@@ -34,7 +34,9 @@ class Queue {
 		this.next = [];
 	}
 	advance (): QueueItem {
-		this.played.push(this.playing);
+		if (this.playing) {
+			this.played.push(this.playing);
+		}
 		if (this.next.length < 1) {
 			this.playing = null;
 			return null;
@@ -43,7 +45,9 @@ class Queue {
 		return this.playing;
 	}
 	rewind (): QueueItem {
-		this.next.unshift(this.playing);
+		if (this.playing) {
+			this.next.unshift(this.playing);
+		}
 		if (this.played.length < 1) {
 			this.playing = null;
 			return null;
