@@ -160,6 +160,18 @@ class Beatbox {
 			});
 		});
 	}
+	public play () {
+		var nowPlayingID = this.queue.advance().id.track;
+		return this.getStreamUrl(nowPlayingID);
+	}
+	public next () {
+		var nowPlayingID = this.queue.advance().id.track;
+		return this.getStreamUrl(nowPlayingID);
+	}
+	public previous () {
+		var nowPlayingID = this.queue.rewind().id.track;
+		return this.getStreamUrl(nowPlayingID);
+	}
 }
 
 export = Beatbox;

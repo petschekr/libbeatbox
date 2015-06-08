@@ -9,8 +9,8 @@ class Queue {
 	constructor() {
 		this.clear(true);
 	}
-	add (item: QueueItem): void {
-		if (!this.playing) {
+	add (item: QueueItem, play: boolean = false): void {
+		if (play && !this.playing) {
 			this.playing = item;
 		}
 		else {
