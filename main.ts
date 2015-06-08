@@ -1,105 +1,13 @@
 /// <reference path="typescript_defs/node.d.ts" />
+/// <reference path="definitions.ts" />
 
 var PlayMusic = require("playmusic");
-
-type PromiseResolve = (value?: any) => any;
-type PromiseReject = (reason: Error) => any;
-declare var Promise: any;
-
-interface QueueItem {
-	id: {
-		track: string;
-		album: string;
-		artist: string;
-	};
-	title: string;
-	album: string;
-	artist: string;
-	genre?: string;
-	info?: {
-		duration: number;
-		formattedDuration: string;
-		year?: number;
-		trackNumber?: number;
-	}
-}
-interface Artist {
-	// As returned by the playmusic API
-	kind: string;
-	name: string;
-	artistArtRef?: string;
-	artistID: string;
-	artist_bio_attribution: {
-		kind: string;
-		source_title: string;
-		source_url: string;
-		license_title: string;
-		license_url: string;
-	};
-}
-interface Album {
-	// As returned by the playmusic API
-	kind: string;
-	name: string;
-	albumArtist: string;
-	albumArtRef: string;
-	albumId: string;
-	artist: string;
-	artistId: string[];
-	description_attribution: {
-		kind: string;
-		source_title: string;
-		source_url: string;
-		license_title: string;
-		license_url: string;
-	};
-	year: number;
-}
-interface Track {
-	// As returned by the playmusic API
-	kind: string;
-	lastModifiedTimestamp: string;
-	title: string;
-	artist: string;
-	composer: string; // Normally empty
-	album: string;
-	albumArtist: string;
-	year: number;
-	trackNumber: number;
-	genre: string;
-	durationMillis: string; // String containing a number
-	albumArtRef: {
-		url: string;
-	}[];
-	playCount: number;
-	discNumber: number;
-	estimatedSize: string; // String containing a number
-	trackType: string; // String containing a number
-	storeId: string;
-	albumId: string;
-	artistId: string[];
-	nid: string;
-	trackAvailableForSubscription: boolean;
-	trackAvailableForPurchase: boolean;
-	albumAvailableForPurchase: boolean;
-	contentType: string; // String containing a number
-	primaryVideo: {
-		kind: string;
-		id: string;
-		thumbnails: {
-			url: string;
-			width: number;
-			height: number;
-		}[];
-	};
-}
-
+import Queue = require("./queue");
 
 class Beatbox {
 	private pm: any;
 	
-	public queue: QueueItem[] = [];
-	public playedQueue: QueueItem[] = [];
+	public queue: Queue;
 	public loggedIn: boolean = false;
 
 	constructor() {
@@ -107,6 +15,7 @@ class Beatbox {
 			throw new Error("libbeatbox requires an ES6 environment with promises enabled. Please upgrade to a newer version of Node.js or use io.js");
 		}
 		this.pm = new PlayMusic();
+		this.queue = new Queue();
 	}
 	public login (email: string, password: string) {
 		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
@@ -181,6 +90,53 @@ class Beatbox {
 				resolve(track);
 			});
 		});
+	}
+	public getStreamUrl (id: string) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.getStreamUrl(id, (err: Error, data: any) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve(data);
+			});
+		});
+	}
+	public idToQueueItem (id: string) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.getAllAccessTrack(id, (err: Error, data: any) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve(this.trackToQueueItem(data));
+			});
+		});
+	}
+	public trackToQueueItem (track: Track): QueueItem {
+		var duration: number = parseInt(track.durationMillis, 10) / 1000;
+		var minutes: number = Math.floor(duration / 60);
+		var seconds: number = duration % 60;
+		var durationFormatted: string = `${minutes}:${seconds.toString().length === 1 ? "0" + seconds : seconds}`;
+		var queueItem = {
+			id: {
+				track: track.nid,
+				album: track.albumId,
+				artist: track.artistId[0]
+			},
+			title: track.title,
+			album: track.album,
+			albumArtURL: track.albumArtRef[0].url,
+			artist: track.artist,
+			genre: track.genre,
+			info: {
+				duration: duration,
+				formattedDuration: durationFormatted,
+				year: track.year,
+				trackNumber: track.trackNumber 
+			}
+		}
+		return queueItem;
 	}
 }
 
