@@ -5,8 +5,7 @@ var PlayMusic = require("playmusic");
 import Queue = require("./queue");
 
 class Beatbox {
-	private pm: any;
-	
+	public pm: any;
 	public queue: Queue;
 	public loggedIn: boolean = false;
 
@@ -31,10 +30,7 @@ class Beatbox {
 			});
 		});
 	}
-	public search (query: string, maxResults?: number) {
-		if (!maxResults) {
-			maxResults = 1;
-		}
+	public search (query: string, maxResults: number = 1) {
 		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
 			this.pm.search(query, maxResults, (err: Error, data: any) => {
 				if (err) {
@@ -137,6 +133,32 @@ class Beatbox {
 			}
 		}
 		return queueItem;
+	}
+	public createRadioStation (stationName: string, seedID: string, seedType: string) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.createStation(stationName, seedID, seedType, (err: Error, data: any) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve(data.mutate_response[0].id);
+			});
+		});
+	}
+	public queueRadioStationTracks (stationID: string, numberOfTracks: number = 5) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.getStationTracks(stationID, numberOfTracks, (err: Error, data: any) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				var tracks: Track[] = data.data.stations[0].tracks;
+				tracks.forEach((track: Track) => {
+					this.queue.add(this.trackToQueueItem(track));
+				});
+				resolve();
+			});
+		});
 	}
 }
 
