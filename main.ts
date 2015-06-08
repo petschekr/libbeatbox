@@ -160,17 +160,22 @@ class Beatbox {
 			});
 		});
 	}
-	public play () {
-		var nowPlayingID = this.queue.advance().id.track;
-		return this.getStreamUrl(nowPlayingID);
+	private incrementTrackPlaycount (trackID: string) {
+		return new Promise((resolve: PromiseResolve, reject: PromiseReject) => {
+			this.pm.incrementTrackPlaycount(trackID, (err: Error, data: any) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve();
+			});
+		});
 	}
-	public next () {
-		var nowPlayingID = this.queue.advance().id.track;
-		return this.getStreamUrl(nowPlayingID);
-	}
-	public previous () {
-		var nowPlayingID = this.queue.rewind().id.track;
-		return this.getStreamUrl(nowPlayingID);
+	public play (trackID: string) {
+		return this.incrementTrackPlaycount(trackID)
+			.then(() => {
+				return this.getStreamUrl(trackID);
+			});
 	}
 }
 
